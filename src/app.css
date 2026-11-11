@@ -1,0 +1,61 @@
+/* Tokens globales: toda la paleta vive aquí */
+:root {
+  --fondo: #000;
+  --superficie: #1c1c1e;
+  --superficie-2: #2c2c2e;
+  --linea: #2e2e30;
+  --linea-fuerte: #3a3a3c;
+  --seleccion: #636366;
+  --texto: #fff;
+  --texto-suave: #8e8e93;
+  --texto-tenue: #48484a;
+  --acento: #ff453a;
+  --fuente: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, system-ui, sans-serif;
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--fuente);
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+ul {
+  list-style: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
