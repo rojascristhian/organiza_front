@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+
+# SvelteKit build & runtime files
+.svelte-kit/
+build/
+dist/
+
+# Environment files (keep local secrets out of git)
+.env
+.env.*
+!.env.example
+
+# Server outputs & deployment logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor & System files
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Testing & Coverage
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+
+# Vite / Cache
+.vite/
+.eslintcache
