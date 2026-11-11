@@ -1,22 +1,22 @@
 <script>
-  import { agenda } from '../../stores/agenda.svelte.js';
+  import { calendarStore } from '../../stores/calendar.svelte.js';
   import Icon from '../ui/Icon.svelte';
 
-  let { cal } = $props();
+  let { calendar } = $props();
 </script>
 
 <button
   class="item"
   type="button"
-  aria-pressed={cal.visible}
-  onclick={() => agenda.alternarCalendario(cal.id)}
+  aria-pressed={calendar.visible}
+  onclick={() => calendarStore.toggleCalendar(calendar.id)}
 >
-  <span class="marca" class:apagada={!cal.visible} style:--color={cal.color}>
-    {#if cal.visible}<Icon name="check" size={13} />{/if}
+  <span class="mark" class:off={!calendar.visible} style:--color={calendar.color}>
+    {#if calendar.visible}<Icon name="check" size={13} />{/if}
   </span>
-  <span class="texto">
-    <span class="nombre">{cal.nombre}</span>
-    {#if cal.detalle}<span class="detalle">{cal.detalle}</span>{/if}
+  <span class="text">
+    <span class="name">{calendar.name}</span>
+    {#if calendar.detail}<span class="detail">{calendar.detail}</span>{/if}
   </span>
 </button>
 
@@ -29,7 +29,7 @@
     padding: 10px 12px;
     text-align: left;
   }
-  .marca {
+  .mark {
     flex: none;
     display: grid;
     place-items: center;
@@ -40,23 +40,23 @@
     border: 2px solid var(--color);
     color: #000;
   }
-  .marca.apagada {
+  .mark.off {
     background: transparent;
   }
-  .texto {
+  .text {
     display: flex;
     flex-direction: column;
     min-width: 0;
     gap: 1px;
   }
-  .nombre {
+  .name {
     font-size: 16px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  .detalle {
+  .detail {
     font-size: 11px;
-    color: var(--texto-suave);
+    color: var(--text-muted);
   }
 </style>

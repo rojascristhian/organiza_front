@@ -1,24 +1,24 @@
 <script>
-  let { vista } = $props();
+  let { view } = $props();
 
-  const nombres = { dia: 'día', semana: 'semana', anio: 'año' };
+  const names = { day: 'día', week: 'semana', year: 'año' };
 </script>
 
-<div class="vacio">
-  <p>La vista de {nombres[vista] ?? vista} todavía no está construida.</p>
-  <p class="nota">Cambia a «Mes» para ver el calendario.</p>
+<div class="empty">
+  <p>La vista de {names[view] ?? view} todavía no está construida.</p>
+  <p class="note">Cambia a «Mes» para ver el calendario.</p>
 </div>
 
 <style>
-  .vacio {
+  .empty {
     flex: 1;
     display: grid;
     place-content: center;
     gap: 6px;
     text-align: center;
-    color: var(--texto-suave);
+    color: var(--text-muted);
   }
-  .nota {
+  .note {
     font-size: 13px;
   }
 </style>

@@ -1,27 +1,27 @@
 <script>
-  import { agenda } from '../../stores/agenda.svelte.js';
+  import { calendarStore } from '../../stores/calendar.svelte.js';
 
-  const vistas = [
-    { id: 'dia', etiqueta: 'Día' },
-    { id: 'semana', etiqueta: 'Semana' },
-    { id: 'mes', etiqueta: 'Mes' },
-    { id: 'anio', etiqueta: 'Año' },
+  const views = [
+    { id: 'day', label: 'Día' },
+    { id: 'week', label: 'Semana' },
+    { id: 'month', label: 'Mes' },
+    { id: 'year', label: 'Año' },
   ];
 </script>
 
-<div class="selector" role="group" aria-label="Tipo de vista">
-  {#each vistas as vista (vista.id)}
-    <button type="button" aria-pressed={agenda.vista === vista.id} onclick={() => agenda.cambiarVista(vista.id)}>
-      {vista.etiqueta}
+<div class="switcher" role="group" aria-label="Tipo de vista">
+  {#each views as view (view.id)}
+    <button type="button" aria-pressed={calendarStore.view === view.id} onclick={() => calendarStore.setView(view.id)}>
+      {view.label}
     </button>
   {/each}
 </div>
 
 <style>
-  .selector {
+  .switcher {
     display: inline-flex;
     padding: 2px;
-    background: var(--superficie);
+    background: var(--surface);
     border-radius: 9px;
     justify-self: center;
   }
@@ -31,7 +31,7 @@
     font-size: 13px;
   }
   button[aria-pressed='true'] {
-    background: var(--seleccion);
+    background: var(--selection);
   }
   @media (max-width: 760px) {
     button {

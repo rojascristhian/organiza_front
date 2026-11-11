@@ -3,8 +3,8 @@
 </script>
 
 <aside class="sidebar" aria-label="Calendarios">
-  <CalendarGroup titulo="iCloud" grupo="icloud" permiteOcultarTodo />
-  <CalendarGroup titulo="Otros" grupo="otros" />
+  <CalendarGroup title="iCloud" group="icloud" canHideAll />
+  <CalendarGroup title="Otros" group="other" />
 </aside>
 
 <style>
@@ -16,8 +16,8 @@
     display: flex;
     flex-direction: column;
     gap: 22px;
-    border-right: 1px solid var(--linea);
-    background: var(--fondo);
+    border-right: 1px solid var(--line);
+    background: var(--bg);
   }
   @media (max-width: 760px) {
     .sidebar {

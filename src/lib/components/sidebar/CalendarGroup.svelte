@@ -1,26 +1,26 @@
 <script>
-  import { agenda } from '../../stores/agenda.svelte.js';
+  import { calendarStore } from '../../stores/calendar.svelte.js';
   import CalendarItem from './CalendarItem.svelte';
 
-  let { titulo, grupo, permiteOcultarTodo = false } = $props();
+  let { title, group, canHideAll = false } = $props();
 
-  const calendarios = $derived(agenda.calendarios.filter((c) => c.grupo === grupo));
-  const todosOcultos = $derived(calendarios.every((c) => !c.visible));
+  const calendars = $derived(calendarStore.calendars.filter((c) => c.group === group));
+  const allHidden = $derived(calendars.every((c) => !c.visible));
 </script>
 
 <section>
   <header>
-    <h2>{titulo}</h2>
-    {#if permiteOcultarTodo}
-      <button type="button" onclick={() => agenda.fijarVisibilidadGrupo(grupo, todosOcultos)}>
-        {todosOcultos ? 'Mostrar todo' : 'Ocultar todo'}
+    <h2>{title}</h2>
+    {#if canHideAll}
+      <button type="button" onclick={() => calendarStore.setGroupVisibility(group, allHidden)}>
+        {allHidden ? 'Mostrar todo' : 'Ocultar todo'}
       </button>
     {/if}
   </header>
 
   <ul>
-    {#each calendarios as cal (cal.id)}
-      <li><CalendarItem {cal} /></li>
+    {#each calendars as calendar (calendar.id)}
+      <li><CalendarItem {calendar} /></li>
     {/each}
   </ul>
 </section>
@@ -36,23 +36,23 @@
   h2 {
     font-size: 12px;
     font-weight: 400;
-    color: var(--texto-suave);
+    color: var(--text-muted);
     text-transform: uppercase;
   }
   header button {
     font-size: 12px;
-    color: var(--acento);
+    color: var(--accent);
     text-transform: uppercase;
   }
   ul {
-    background: var(--superficie);
+    background: var(--surface);
     border-radius: 10px;
     overflow: hidden;
   }
   li {
     position: relative;
   }
-  /* Separador que empieza después de la marca de color */
+  /* Divider that starts after the color mark */
   li + li::before {
     content: '';
     position: absolute;
@@ -60,6 +60,6 @@
     left: 46px;
     right: 0;
     height: 1px;
-    background: var(--linea-fuerte);
+    background: var(--line-strong);
   }
 </style>

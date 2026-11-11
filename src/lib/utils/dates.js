@@ -1,54 +1,57 @@
-// Utilidades de fechas. Todas trabajan en hora local y con claves "AAAA-MM-DD".
+// Date helpers. Everything works in local time and with "YYYY-MM-DD" keys.
 
-export const DIAS_SEMANA = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+const LOCALE = 'es';
 
-export function hoy() {
-  const d = new Date();
-  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+// Weekday labels shown in the UI (the week starts on Sunday).
+export const WEEKDAY_LABELS = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+
+export function today() {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate());
 }
 
-export function claveFecha(fecha) {
-  const a = fecha.getFullYear();
-  const m = String(fecha.getMonth() + 1).padStart(2, '0');
-  const d = String(fecha.getDate()).padStart(2, '0');
-  return `${a}-${m}-${d}`;
+export function dateKey(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
-export function desdeClave(clave) {
-  const [a, m, d] = clave.split('-').map(Number);
-  return new Date(a, m - 1, d);
+export function fromDateKey(key) {
+  const [year, month, day] = key.split('-').map(Number);
+  return new Date(year, month - 1, day);
 }
 
-export function mismoDia(a, b) {
-  return claveFecha(a) === claveFecha(b);
+export function isSameDay(a, b) {
+  return dateKey(a) === dateKey(b);
 }
 
-/** Primer día del mes resultante de sumar `n` meses a `fecha`. */
-export function sumarMeses(fecha, n) {
-  return new Date(fecha.getFullYear(), fecha.getMonth() + n, 1);
+/** First day of the month you get by adding `amount` months to `date`. */
+export function addMonths(date, amount) {
+  return new Date(date.getFullYear(), date.getMonth() + amount, 1);
 }
 
-export function nombreMes(fecha) {
-  return new Intl.DateTimeFormat('es', { month: 'long' }).format(fecha);
+export function monthName(date) {
+  return new Intl.DateTimeFormat(LOCALE, { month: 'long' }).format(date);
 }
 
-export function fechaLarga(fecha) {
-  return new Intl.DateTimeFormat('es', { dateStyle: 'long' }).format(fecha);
+export function longDate(date) {
+  return new Intl.DateTimeFormat(LOCALE, { dateStyle: 'long' }).format(date);
 }
 
-/** 42 celdas (6 semanas, empezando en domingo) para dibujar un mes. */
-export function construirCuadriculaMes(fecha) {
-  const primero = new Date(fecha.getFullYear(), fecha.getMonth(), 1);
-  const inicio = new Date(primero.getFullYear(), primero.getMonth(), 1 - primero.getDay());
-  const ahora = hoy();
+/** 42 cells (6 weeks, starting on Sunday) used to draw one month. */
+export function buildMonthGrid(date) {
+  const firstOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+  const start = new Date(firstOfMonth.getFullYear(), firstOfMonth.getMonth(), 1 - firstOfMonth.getDay());
+  const current = today();
 
-  return Array.from({ length: 42 }, (_, i) => {
-    const d = new Date(inicio.getFullYear(), inicio.getMonth(), inicio.getDate() + i);
+  return Array.from({ length: 42 }, (_, index) => {
+    const cellDate = new Date(start.getFullYear(), start.getMonth(), start.getDate() + index);
     return {
-      fecha: d,
-      clave: claveFecha(d),
-      delMes: d.getMonth() === fecha.getMonth(),
-      esHoy: mismoDia(d, ahora),
+      date: cellDate,
+      key: dateKey(cellDate),
+      inMonth: cellDate.getMonth() === date.getMonth(),
+      isToday: isSameDay(cellDate, current),
     };
   });
 }

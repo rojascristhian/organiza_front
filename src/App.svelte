@@ -1,5 +1,5 @@
 <script>
-  import { agenda } from './lib/stores/agenda.svelte.js';
+  import { calendarStore } from './lib/stores/calendar.svelte.js';
   import Toolbar from './lib/components/toolbar/Toolbar.svelte';
   import Sidebar from './lib/components/sidebar/Sidebar.svelte';
   import CalendarHeader from './lib/components/calendar/CalendarHeader.svelte';
@@ -11,22 +11,22 @@
 <div class="app">
   <Toolbar />
 
-  <div class="cuerpo">
-    {#if agenda.barraLateralAbierta}
+  <div class="body">
+    {#if calendarStore.sidebarOpen}
       <Sidebar />
     {/if}
 
-    <main class="principal">
+    <main class="main">
       <CalendarHeader />
-      {#if agenda.vista === 'mes'}
+      {#if calendarStore.view === 'month'}
         <MonthView />
       {:else}
-        <ViewPlaceholder vista={agenda.vista} />
+        <ViewPlaceholder view={calendarStore.view} />
       {/if}
     </main>
   </div>
 
-  {#if agenda.editor}
+  {#if calendarStore.draft}
     <EventDialog />
   {/if}
 </div>
@@ -37,13 +37,13 @@
     flex-direction: column;
     height: 100dvh;
   }
-  .cuerpo {
+  .body {
     position: relative;
     flex: 1;
     display: flex;
     min-height: 0;
   }
-  .principal {
+  .main {
     flex: 1;
     display: flex;
     flex-direction: column;

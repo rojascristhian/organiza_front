@@ -1,29 +1,29 @@
 <script>
-  import { agenda } from '../../stores/agenda.svelte.js';
-  import { construirCuadriculaMes } from '../../utils/dates.js';
+  import { calendarStore } from '../../stores/calendar.svelte.js';
+  import { buildMonthGrid } from '../../utils/dates.js';
   import WeekdayRow from './WeekdayRow.svelte';
   import DayCell from './DayCell.svelte';
 
-  const dias = $derived(construirCuadriculaMes(agenda.fechaActiva));
+  const days = $derived(buildMonthGrid(calendarStore.activeDate));
 </script>
 
-<section class="mes" aria-label="Vista mensual">
+<section class="month" aria-label="Vista mensual">
   <WeekdayRow />
-  <div class="cuadricula">
-    {#each dias as dia (dia.clave)}
-      <DayCell {dia} eventos={agenda.eventosDelDia(dia.clave)} />
+  <div class="grid">
+    {#each days as day (day.key)}
+      <DayCell {day} events={calendarStore.getEventsForDay(day.key)} />
     {/each}
   </div>
 </section>
 
 <style>
-  .mes {
+  .month {
     flex: 1;
     display: flex;
     flex-direction: column;
     min-height: 0;
   }
-  .cuadricula {
+  .grid {
     flex: 1;
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));

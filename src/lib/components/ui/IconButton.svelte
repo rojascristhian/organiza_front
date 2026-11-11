@@ -15,12 +15,12 @@
     width: 36px;
     height: 36px;
     border-radius: 8px;
-    color: var(--acento);
+    color: var(--accent);
   }
   .icon-btn:hover {
-    background: var(--superficie);
+    background: var(--surface);
   }
   .icon-btn[aria-pressed='true'] {
-    background: var(--superficie-2);
+    background: var(--surface-2);
   }
 </style>

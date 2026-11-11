@@ -1,23 +1,23 @@
-# Agenda (Svelte 5 + Vite)
+# Calendar App (Svelte 5 + Vite)
 
-Calendario y organizador de tareas con interfaz estilo Apple Calendar (modo oscuro).
+Calendar and task organizer with an Apple Calendar–style dark interface.
 
 ```bash
 npm install
 npm run dev
 ```
 
-## Estructura
+## Structure
 
 ```
 src/
-├─ main.js                      punto de entrada
-├─ App.svelte                   composición de la pantalla
-├─ app.css                      tokens (colores, fuente) y reset
+├─ main.js                        entry point
+├─ App.svelte                     screen layout
+├─ app.css                        design tokens (colors, font) and reset
 └─ lib/
-   ├─ stores/agenda.svelte.js   estado global + persistencia (localStorage)
-   ├─ utils/dates.js            funciones de fechas
-   ├─ data/seed.js              calendarios y eventos de ejemplo
+   ├─ stores/calendar.svelte.js   global state + persistence (localStorage)
+   ├─ utils/dates.js              date helpers
+   ├─ data/seed.js                sample calendars and events
    └─ components/
       ├─ ui/         Icon, IconButton
       ├─ toolbar/    Toolbar, ViewSwitcher, SearchBox

@@ -1,27 +1,27 @@
 <script>
-  import { agenda } from '../../stores/agenda.svelte.js';
+  import { calendarStore } from '../../stores/calendar.svelte.js';
 
-  let { evento } = $props();
+  let { event } = $props();
 
-  const color = $derived(agenda.calendarioPorId(evento.calendarioId)?.color ?? '#8e8e93');
+  const color = $derived(calendarStore.getCalendarById(event.calendarId)?.color ?? '#8e8e93');
 
-  function abrir(e) {
+  function open(e) {
     e.stopPropagation();
-    agenda.abrirEdicion(evento);
+    calendarStore.openEditEvent(event);
   }
 </script>
 
 <button
   type="button"
   class="chip"
-  class:completo={evento.todoElDia}
+  class:all-day={event.allDay}
   style:--color={color}
-  title={evento.titulo}
-  onclick={abrir}
+  title={event.title}
+  onclick={open}
 >
-  {#if !evento.todoElDia}<span class="punto"></span>{/if}
-  <span class="titulo">{evento.titulo}</span>
-  {#if !evento.todoElDia}<time>{evento.hora}</time>{/if}
+  {#if !event.allDay}<span class="dot"></span>{/if}
+  <span class="title">{event.title}</span>
+  {#if !event.allDay}<time>{event.time}</time>{/if}
 </button>
 
 <style>
@@ -37,18 +37,18 @@
     line-height: 1.4;
     text-align: left;
   }
-  .chip.completo {
+  .chip.all-day {
     background: color-mix(in srgb, var(--color) 28%, #000);
     color: color-mix(in srgb, var(--color) 65%, #fff);
   }
-  .punto {
+  .dot {
     flex: none;
     width: 5px;
     height: 5px;
     border-radius: 50%;
     background: var(--color);
   }
-  .titulo {
+  .title {
     flex: 1;
     min-width: 0;
     overflow: hidden;
@@ -58,6 +58,6 @@
   time {
     flex: none;
     font-size: 10px;
-    color: var(--texto-suave);
+    color: var(--text-muted);
   }
 </style>

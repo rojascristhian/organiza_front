@@ -1,86 +1,91 @@
 <script>
   import { onMount } from 'svelte';
-  import { agenda } from '../../stores/agenda.svelte.js';
+  import { calendarStore } from '../../stores/calendar.svelte.js';
 
-  // Copia local: no se toca el store hasta pulsar «Guardar».
-  let borrador = $state({ ...agenda.editor });
-  let dialogo;
+  // Local copy: the store is not touched until "Guardar" is pressed.
+  let draft = $state({ ...calendarStore.draft });
+  let dialog;
 
-  const esNuevo = !borrador.id;
-  const calendarioActual = agenda.calendarioPorId(borrador.calendarioId);
-  const soloLectura = calendarioActual ? !calendarioActual.editable : false;
-  const opciones = soloLectura ? [calendarioActual] : agenda.calendarios.filter((c) => c.editable);
+  const isNew = !draft.id;
+  const currentCalendar = calendarStore.getCalendarById(draft.calendarId);
+  const readOnly = currentCalendar ? !currentCalendar.editable : false;
+  const calendarOptions = readOnly ? [currentCalendar] : calendarStore.calendars.filter((c) => c.editable);
 
-  onMount(() => dialogo.showModal());
+  onMount(() => dialog.showModal());
 
-  function enviar(e) {
+  function submit(e) {
     e.preventDefault();
-    agenda.guardarEvento($state.snapshot(borrador));
-    dialogo.close();
+    calendarStore.saveEvent($state.snapshot(draft));
+    dialog.close();
   }
 
-  function eliminar() {
-    agenda.eliminarEvento(borrador.id);
-    dialogo.close();
+  function remove() {
+    calendarStore.deleteEvent(draft.id);
+    dialog.close();
   }
 
-  // Un clic sobre el propio <dialog> (y no sobre el formulario) es un clic en el fondo.
-  function clicFondo(e) {
-    if (e.target === dialogo) dialogo.close();
+  // A click on the <dialog> itself (not on the form) is a click on the backdrop.
+  function handleBackdropClick(e) {
+    if (e.target === dialog) dialog.close();
   }
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
-<dialog bind:this={dialogo} aria-labelledby="titulo-dialogo" onclose={() => agenda.cerrarEditor()} onclick={clicFondo}>
-  <form onsubmit={enviar}>
-    <h2 id="titulo-dialogo">{soloLectura ? 'Evento' : esNuevo ? 'Nuevo evento' : 'Editar evento'}</h2>
+<dialog
+  bind:this={dialog}
+  aria-labelledby="dialog-title"
+  onclose={() => calendarStore.closeEditor()}
+  onclick={handleBackdropClick}
+>
+  <form onsubmit={submit}>
+    <h2 id="dialog-title">{readOnly ? 'Evento' : isNew ? 'Nuevo evento' : 'Editar evento'}</h2>
 
-    <fieldset disabled={soloLectura}>
+    <fieldset disabled={readOnly}>
       <label>
         <span>Título</span>
-        <input type="text" bind:value={borrador.titulo} placeholder="Título del evento" required />
+        <input type="text" bind:value={draft.title} placeholder="Título del evento" required />
       </label>
 
       <label>
         <span>Calendario</span>
-        <select bind:value={borrador.calendarioId}>
-          {#each opciones as cal (cal.id)}
-            <option value={cal.id}>{cal.nombre}</option>
+        <select bind:value={draft.calendarId}>
+          {#each calendarOptions as calendar (calendar.id)}
+            <option value={calendar.id}>{calendar.name}</option>
           {/each}
         </select>
       </label>
 
       <label>
         <span>Fecha</span>
-        <input type="date" bind:value={borrador.fecha} required />
+        <input type="date" bind:value={draft.date} required />
       </label>
 
-      <label class="en-linea">
-        <input type="checkbox" bind:checked={borrador.todoElDia} />
+      <label class="inline">
+        <input type="checkbox" bind:checked={draft.allDay} />
         <span>Todo el día</span>
       </label>
 
-      {#if !borrador.todoElDia}
+      {#if !draft.allDay}
         <label>
           <span>Hora</span>
-          <input type="time" bind:value={borrador.hora} required />
+          <input type="time" bind:value={draft.time} required />
         </label>
       {/if}
 
       <label>
         <span>Notas</span>
-        <textarea rows="3" bind:value={borrador.notas}></textarea>
+        <textarea rows="3" bind:value={draft.notes}></textarea>
       </label>
     </fieldset>
 
-    <div class="botones">
-      {#if !esNuevo && !soloLectura}
-        <button type="button" class="peligro" onclick={eliminar}>Eliminar</button>
+    <div class="buttons">
+      {#if !isNew && !readOnly}
+        <button type="button" class="danger" onclick={remove}>Eliminar</button>
       {/if}
-      <span class="espacio"></span>
-      <button type="button" onclick={() => dialogo.close()}>{soloLectura ? 'Cerrar' : 'Cancelar'}</button>
-      {#if !soloLectura}
-        <button type="submit" class="primario">Guardar</button>
+      <span class="spacer"></span>
+      <button type="button" onclick={() => dialog.close()}>{readOnly ? 'Cerrar' : 'Cancelar'}</button>
+      {#if !readOnly}
+        <button type="submit" class="primary">Guardar</button>
       {/if}
     </div>
   </form>
@@ -91,10 +96,10 @@
     margin: auto;
     width: min(420px, calc(100vw - 32px));
     padding: 0;
-    border: 1px solid var(--linea-fuerte);
+    border: 1px solid var(--line-strong);
     border-radius: 14px;
-    background: var(--superficie);
-    color: var(--texto);
+    background: var(--surface);
+    color: var(--text);
   }
   dialog::backdrop {
     background: rgb(0 0 0 / 0.6);
@@ -120,15 +125,15 @@
   }
   label span {
     font-size: 13px;
-    color: var(--texto-suave);
+    color: var(--text-muted);
   }
-  .en-linea {
+  .inline {
     display: flex;
     align-items: center;
     gap: 8px;
   }
-  .en-linea span {
-    color: var(--texto);
+  .inline span {
+    color: var(--text);
     font-size: 15px;
   }
   input[type='text'],
@@ -138,34 +143,34 @@
   textarea {
     width: 100%;
     padding: 8px 10px;
-    background: var(--fondo);
-    border: 1px solid var(--linea-fuerte);
+    background: var(--bg);
+    border: 1px solid var(--line-strong);
     border-radius: 8px;
-    color: var(--texto);
+    color: var(--text);
     font: inherit;
   }
   textarea {
     resize: vertical;
   }
-  .botones {
+  .buttons {
     display: flex;
     align-items: center;
     gap: 8px;
   }
-  .espacio {
+  .spacer {
     flex: 1;
   }
-  .botones button {
+  .buttons button {
     padding: 8px 14px;
     border-radius: 8px;
-    background: var(--superficie-2);
+    background: var(--surface-2);
   }
-  .botones .primario {
-    background: var(--acento);
+  .buttons .primary {
+    background: var(--accent);
     color: #fff;
     font-weight: 600;
   }
-  .botones .peligro {
-    color: var(--acento);
+  .buttons .danger {
+    color: var(--accent);
   }
 </style>

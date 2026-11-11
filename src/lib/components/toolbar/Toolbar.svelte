@@ -1,19 +1,19 @@
 <script>
-  import { agenda } from '../../stores/agenda.svelte.js';
+  import { calendarStore } from '../../stores/calendar.svelte.js';
   import IconButton from '../ui/IconButton.svelte';
   import ViewSwitcher from './ViewSwitcher.svelte';
   import SearchBox from './SearchBox.svelte';
 </script>
 
 <header class="toolbar">
-  <div class="acciones">
+  <div class="actions">
     <IconButton
-      icon="calendario"
+      icon="calendar"
       label="Mostrar calendarios"
-      pressed={agenda.barraLateralAbierta}
-      onclick={() => agenda.alternarBarraLateral()}
+      pressed={calendarStore.sidebarOpen}
+      onclick={() => calendarStore.toggleSidebar()}
     />
-    <IconButton icon="mas" label="Nuevo evento" onclick={() => agenda.abrirNuevo()} />
+    <IconButton icon="plus" label="Nuevo evento" onclick={() => calendarStore.openNewEvent()} />
   </div>
 
   <ViewSwitcher />
@@ -27,9 +27,9 @@
     align-items: center;
     gap: 12px;
     padding: 8px 16px;
-    border-bottom: 1px solid var(--linea);
+    border-bottom: 1px solid var(--line);
   }
-  .acciones {
+  .actions {
     display: flex;
     gap: 6px;
   }
@@ -37,7 +37,7 @@
     .toolbar {
       grid-template-columns: auto 1fr;
     }
-    .toolbar :global(.busqueda) {
+    .toolbar :global(.search) {
       grid-column: 1 / -1;
       justify-self: stretch;
     }
