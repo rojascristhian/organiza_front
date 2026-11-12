@@ -2,8 +2,12 @@
 // Components only read properties and call methods: there is no data logic inside them.
 import { initialCalendars, createDemoEvents } from '../data/seed.js';
 import { today, dateKey, addMonths } from '../utils/dates.js';
+import { i18n } from '../i18n/i18n.svelte.js';
 
 const STORAGE_KEY = 'calendar-app:v1';
+
+// Colors given, in order, to calendars created by the user.
+const CUSTOM_CALENDAR_COLORS = ['#ff6482', '#64d2ff', '#ffd60a', '#ac8e68', '#5e5ce6', '#32d74b'];
 
 function readStorage() {
   try {
@@ -21,7 +25,17 @@ function normalize(text) {
 // All-day events first; then by time; then by title.
 function compareEvents(a, b) {
   if (a.allDay !== b.allDay) return a.allDay ? -1 : 1;
-  return (a.time ?? '').localeCompare(b.time ?? '') || a.title.localeCompare(b.title, 'es');
+  return (a.time ?? '').localeCompare(b.time ?? '') || a.title.localeCompare(b.title);
+}
+
+// Data saved by an earlier version has plain names for built-in calendars.
+// Re-attach their translation keys so they follow the selected language.
+const builtInCalendars = new Map(initialCalendars().map((calendar) => [calendar.id, calendar]));
+
+function withTranslationKeys(calendar) {
+  const builtIn = builtInCalendars.get(calendar.id);
+  if (!builtIn) return calendar;
+  return { ...calendar, nameKey: builtIn.nameKey, detailKey: builtIn.detailKey };
 }
 
 class CalendarStore {
@@ -53,14 +67,29 @@ class CalendarStore {
   constructor() {
     const saved = readStorage();
     const now = today();
-    this.calendars = saved?.calendars ?? initialCalendars();
-    this.events = saved?.events ?? createDemoEvents(now.getFullYear(), now.getMonth());
+    this.calendars = (saved?.calendars ?? initialCalendars()).map(withTranslationKeys);
+    this.events =
+      saved?.events ?? createDemoEvents(now.getFullYear(), now.getMonth(), (key) => i18n.t(key));
     this.sidebarOpen = window.innerWidth > 760;
   }
 
   /* ---------- Queries ---------- */
   getCalendarById(id) {
     return this.calendars.find((c) => c.id === id);
+  }
+
+  /** Display name: translated for built-in calendars, as typed for custom ones. */
+  getCalendarName(calendar) {
+    if (!calendar) return '';
+    return calendar.nameKey ? i18n.t(calendar.nameKey) : calendar.name;
+  }
+
+  getCalendarDetail(calendar) {
+    return calendar?.detailKey ? i18n.t(calendar.detailKey) : '';
+  }
+
+  countEventsInCalendar(id) {
+    return this.events.filter((e) => e.calendarId === id).length;
   }
 
   getEventsForDay(key) {
@@ -103,6 +132,40 @@ class CalendarStore {
     this.persist();
   }
 
+  /** Creates a calendar from a typed name. Returns its id (the existing one if the name is taken). */
+  addCalendar(name) {
+    const clean = name.trim();
+    if (!clean) return null;
+
+    const existing = this.calendars.find(
+      (c) => c.editable && normalize(this.getCalendarName(c)) === normalize(clean),
+    );
+    if (existing) return existing.id;
+
+    const customCount = this.calendars.filter((c) => c.custom).length;
+    const calendar = {
+      id: crypto.randomUUID(),
+      name: clean,
+      color: CUSTOM_CALENDAR_COLORS[customCount % CUSTOM_CALENDAR_COLORS.length],
+      group: 'icloud',
+      visible: true,
+      editable: true,
+      custom: true,
+    };
+    this.calendars.push(calendar);
+    this.persist();
+    return calendar.id;
+  }
+
+  /** Only calendars created by the user can be deleted. Their tasks are deleted with them. */
+  deleteCalendar(id) {
+    const calendar = this.getCalendarById(id);
+    if (!calendar?.custom) return;
+    this.calendars = this.calendars.filter((c) => c.id !== id);
+    this.events = this.events.filter((e) => e.calendarId !== id);
+    this.persist();
+  }
+
   /* ---------- Event editor ---------- */
   openNewEvent(key = dateKey(today())) {
     const firstEditable = this.calendars.find((c) => c.editable);
@@ -128,13 +191,15 @@ class CalendarStore {
   saveEvent(draft) {
     const clean = {
       ...draft,
-      title: draft.title.trim() || 'Sin título',
+      title: draft.title.trim() || i18n.t('task.untitled'),
       time: draft.allDay ? '' : draft.time,
     };
 
     if (clean.id) {
       const index = this.events.findIndex((e) => e.id === clean.id);
+      // If the task's calendar was deleted while editing, saving puts it back.
       if (index >= 0) this.events[index] = clean;
+      else this.events.push(clean);
     } else {
       this.events.push({ ...clean, id: crypto.randomUUID() });
     }

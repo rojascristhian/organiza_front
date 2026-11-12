@@ -3,6 +3,9 @@
   import Icon from '../ui/Icon.svelte';
 
   let { calendar } = $props();
+
+  const name = $derived(calendarStore.getCalendarName(calendar));
+  const detail = $derived(calendarStore.getCalendarDetail(calendar));
 </script>
 
 <button
@@ -15,8 +18,8 @@
     {#if calendar.visible}<Icon name="check" size={13} />{/if}
   </span>
   <span class="text">
-    <span class="name">{calendar.name}</span>
-    {#if calendar.detail}<span class="detail">{calendar.detail}</span>{/if}
+    <span class="name">{name}</span>
+    {#if detail}<span class="detail">{detail}</span>{/if}
   </span>
 </button>
 

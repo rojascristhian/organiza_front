@@ -1,18 +1,14 @@
 <script>
   import { calendarStore } from '../../stores/calendar.svelte.js';
+  import { t } from '../../i18n/i18n.svelte.js';
 
-  const views = [
-    { id: 'day', label: 'Día' },
-    { id: 'week', label: 'Semana' },
-    { id: 'month', label: 'Mes' },
-    { id: 'year', label: 'Año' },
-  ];
+  const viewIds = ['day', 'week', 'month', 'year'];
 </script>
 
-<div class="switcher" role="group" aria-label="Tipo de vista">
-  {#each views as view (view.id)}
-    <button type="button" aria-pressed={calendarStore.view === view.id} onclick={() => calendarStore.setView(view.id)}>
-      {view.label}
+<div class="switcher" role="group" aria-label={t('views.label')}>
+  {#each viewIds as id (id)}
+    <button type="button" aria-pressed={calendarStore.view === id} onclick={() => calendarStore.setView(id)}>
+      {t(`views.${id}`)}
     </button>
   {/each}
 </div>

@@ -1,5 +1,6 @@
 <script>
   import { calendarStore } from '../../stores/calendar.svelte.js';
+  import { i18n, t } from '../../i18n/i18n.svelte.js';
   import { longDate } from '../../utils/dates.js';
   import EventChip from './EventChip.svelte';
 
@@ -14,7 +15,7 @@
       type="button"
       class="number"
       class:today={day.isToday}
-      aria-label={`Nuevo evento el ${longDate(day.date)}`}
+      aria-label={t('dayCell.newTask', { date: longDate(day.date, i18n.locale) })}
       onclick={createEvent}
     >
       {day.date.getDate()}

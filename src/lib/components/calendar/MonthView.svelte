@@ -1,5 +1,6 @@
 <script>
   import { calendarStore } from '../../stores/calendar.svelte.js';
+  import { t } from '../../i18n/i18n.svelte.js';
   import { buildMonthGrid } from '../../utils/dates.js';
   import WeekdayRow from './WeekdayRow.svelte';
   import DayCell from './DayCell.svelte';
@@ -7,7 +8,7 @@
   const days = $derived(buildMonthGrid(calendarStore.activeDate));
 </script>
 
-<section class="month" aria-label="Vista mensual">
+<section class="month" aria-label={t('month.label')}>
   <WeekdayRow />
   <div class="grid">
     {#each days as day (day.key)}

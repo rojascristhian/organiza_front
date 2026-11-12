@@ -1,5 +1,6 @@
 <script>
   import { calendarStore } from '../../stores/calendar.svelte.js';
+  import { t } from '../../i18n/i18n.svelte.js';
   import Icon from '../ui/Icon.svelte';
 </script>
 
@@ -7,8 +8,8 @@
   <Icon name="search" size={16} />
   <input
     type="search"
-    placeholder="Buscar"
-    aria-label="Buscar eventos"
+    placeholder={t('search.placeholder')}
+    aria-label={t('search.label')}
     value={calendarStore.query}
     oninput={(e) => calendarStore.setQuery(e.currentTarget.value)}
   />
@@ -16,11 +17,12 @@
 
 <style>
   .search {
+    flex: 1;
     display: flex;
     align-items: center;
     gap: 6px;
-    justify-self: end;
-    width: min(240px, 100%);
+    min-width: 0;
+    max-width: 240px;
     padding: 6px 10px;
     background: var(--surface);
     border-radius: 10px;

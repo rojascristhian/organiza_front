@@ -1,9 +1,12 @@
 <script>
-  import { WEEKDAY_LABELS } from '../../utils/dates.js';
+  import { i18n } from '../../i18n/i18n.svelte.js';
+  import { getWeekdayLabels } from '../../utils/dates.js';
+
+  const labels = $derived(getWeekdayLabels(i18n.locale));
 </script>
 
 <div class="row" aria-hidden="true">
-  {#each WEEKDAY_LABELS as label (label)}
+  {#each labels as label, index (index)}
     <span>{label}</span>
   {/each}
 </div>

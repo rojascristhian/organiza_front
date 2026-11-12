@@ -1,8 +1,9 @@
 <script>
   import { calendarStore } from '../../stores/calendar.svelte.js';
+  import { t } from '../../i18n/i18n.svelte.js';
   import CalendarItem from './CalendarItem.svelte';
 
-  let { title, group, canHideAll = false } = $props();
+  let { titleKey, group, canHideAll = false } = $props();
 
   const calendars = $derived(calendarStore.calendars.filter((c) => c.group === group));
   const allHidden = $derived(calendars.every((c) => !c.visible));
@@ -10,10 +11,10 @@
 
 <section>
   <header>
-    <h2>{title}</h2>
+    <h2>{t(titleKey)}</h2>
     {#if canHideAll}
       <button type="button" onclick={() => calendarStore.setGroupVisibility(group, allHidden)}>
-        {allHidden ? 'Mostrar todo' : 'Ocultar todo'}
+        {allHidden ? t('groups.showAll') : t('groups.hideAll')}
       </button>
     {/if}
   </header>

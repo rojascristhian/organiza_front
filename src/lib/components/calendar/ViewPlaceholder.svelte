@@ -1,12 +1,14 @@
 <script>
+  import { t } from '../../i18n/i18n.svelte.js';
+
   let { view } = $props();
 
-  const names = { day: 'día', week: 'semana', year: 'año' };
+  const viewName = $derived(t(`views.${view}`).toLowerCase());
 </script>
 
 <div class="empty">
-  <p>La vista de {names[view] ?? view} todavía no está construida.</p>
-  <p class="note">Cambia a «Mes» para ver el calendario.</p>
+  <p>{t('placeholder.notBuilt', { view: viewName })}</p>
+  <p class="note">{t('placeholder.hint')}</p>
 </div>
 
 <style>

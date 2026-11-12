@@ -28,5 +28,10 @@
     <path d="M9 5l7 7-7 7" />
   {:else if name === 'check'}
     <path d="M5 12.5l4.5 4.5L19 7.5" />
+  {:else if name === 'globe'}
+    <circle cx="12" cy="12" r="9" />
+    <path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" />
+  {:else if name === 'trash'}
+    <path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6" />
   {/if}
 </svg>

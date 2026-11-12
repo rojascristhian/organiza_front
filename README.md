@@ -16,12 +16,16 @@ src/
 ├─ app.css                        design tokens (colors, font) and reset
 └─ lib/
    ├─ stores/calendar.svelte.js   global state + persistence (localStorage)
+   ├─ i18n/
+   │  ├─ translations.js          all UI text, one block per language
+   │  └─ i18n.svelte.js           current language + t() function
    ├─ utils/dates.js              date helpers
    ├─ data/seed.js                sample calendars and events
    └─ components/
       ├─ ui/         Icon, IconButton
-      ├─ toolbar/    Toolbar, ViewSwitcher, SearchBox
+      ├─ toolbar/    Toolbar, ViewSwitcher, SearchBox, LanguageSwitcher
       ├─ sidebar/    Sidebar, CalendarGroup, CalendarItem
       ├─ calendar/   CalendarHeader, MonthView, WeekdayRow, DayCell, EventChip, ViewPlaceholder
       └─ events/     EventDialog
 ```
+

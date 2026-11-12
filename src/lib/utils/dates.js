@@ -1,9 +1,5 @@
 // Date helpers. Everything works in local time and with "YYYY-MM-DD" keys.
-
-const LOCALE = 'es';
-
-// Weekday labels shown in the UI (the week starts on Sunday).
-export const WEEKDAY_LABELS = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+// Functions that produce text receive the locale ('es', 'en', ...) as an argument.
 
 export function today() {
   const now = new Date();
@@ -31,12 +27,19 @@ export function addMonths(date, amount) {
   return new Date(date.getFullYear(), date.getMonth() + amount, 1);
 }
 
-export function monthName(date) {
-  return new Intl.DateTimeFormat(LOCALE, { month: 'long' }).format(date);
+export function monthName(date, locale) {
+  return new Intl.DateTimeFormat(locale, { month: 'long' }).format(date);
 }
 
-export function longDate(date) {
-  return new Intl.DateTimeFormat(LOCALE, { dateStyle: 'long' }).format(date);
+export function longDate(date, locale) {
+  return new Intl.DateTimeFormat(locale, { dateStyle: 'long' }).format(date);
+}
+
+/** Short weekday labels, Sunday first (the month grid starts on Sunday). */
+export function getWeekdayLabels(locale) {
+  const formatter = new Intl.DateTimeFormat(locale, { weekday: 'short' });
+  // August 1st, 2021 was a Sunday.
+  return Array.from({ length: 7 }, (_, index) => formatter.format(new Date(2021, 7, 1 + index)));
 }
 
 /** 42 cells (6 weeks, starting on Sunday) used to draw one month. */

@@ -1,10 +1,11 @@
 <script>
+  import { t } from '../../i18n/i18n.svelte.js';
   import CalendarGroup from './CalendarGroup.svelte';
 </script>
 
-<aside class="sidebar" aria-label="Calendarios">
-  <CalendarGroup title="iCloud" group="icloud" canHideAll />
-  <CalendarGroup title="Otros" group="other" />
+<aside class="sidebar" aria-label={t('sidebar.label')}>
+  <CalendarGroup titleKey="groups.icloud" group="icloud" canHideAll />
+  <CalendarGroup titleKey="groups.other" group="other" />
 </aside>
 
 <style>
