@@ -6,7 +6,7 @@ node_modules/
 build/
 dist/
 
-# Environment files (keep local secrets out of git)
+# Environment files
 .env
 .env.*
 !.env.example
